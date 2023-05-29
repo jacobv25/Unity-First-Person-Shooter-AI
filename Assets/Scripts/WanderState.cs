@@ -5,6 +5,7 @@ public class WanderState : State
 {
     private float wanderRadius;
     private NavMeshAgent agent;
+    private float wanderTimer;
 
     public float WanderRadius { get { return wanderRadius; } }
 
@@ -13,6 +14,7 @@ public class WanderState : State
     { 
         this.wanderRadius = wanderRadius;
         agent = npc.GetComponent<NavMeshAgent>();
+        wanderTimer = npc.wanderTime;
     }
 
     public override void Enter()
@@ -27,6 +29,39 @@ public class WanderState : State
         if (!agent.pathPending && agent.remainingDistance < 0.5f)
         {
             agent.SetDestination(RandomNavmeshLocation(wanderRadius));
+        }
+        // Check for enemies.
+        Vector3 npcPosition = npc.transform.position;
+        Vector3 startDirection = Quaternion.Euler(0, -npc.visionAngle / 2, 0) * npc.transform.forward;
+        Vector3 leftBoundary = Quaternion.Euler(0, npc.visionAngle, 0) * startDirection;
+        Vector3 rightBoundary = startDirection;
+
+        RaycastHit hit;
+        for (int i = 0; i < npc.numberOfRays; i++)
+        {
+            float interpolationFactor = (float)(i + 1) / (npc.numberOfRays + 1);
+            Vector3 interpolatedDirection = Vector3.Slerp(rightBoundary, leftBoundary, interpolationFactor);
+            Ray visionRay = new Ray(npcPosition, interpolatedDirection);
+            
+            if (Physics.Raycast(visionRay, out hit, npc.visionDistance))
+            {
+                // Check if the hit object is an NPC
+                NPC potentialEnemy = hit.transform.GetComponent<NPC>();
+                if (potentialEnemy != null && npc.IsEnemy(potentialEnemy))
+                {
+                    // We see an enemy! Attack!
+                    npc.Target = potentialEnemy; // Set the target.
+                    Debug.Log(npc.Target.ToString());
+                    npc.ChangeState(new RangedAttackState(npc, npc.attackRange, npc.attackDamage)); // Change to attack state.
+                    return;
+                }
+            }
+        }
+
+        wanderTimer -= Time.deltaTime;
+        if (wanderTimer <= 0)
+        {
+            npc.ChangeState(new IdleState(npc));
         }
     }
 

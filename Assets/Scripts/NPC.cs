@@ -17,6 +17,10 @@ public class NPC : MonoBehaviour
     public int attackDamage = 10;
     public int numberOfRays = 10;  // The number of additional rays to draw in the vision cone
     public Gun gun; // The gun this NPC will use
+    public float idleTime = 5f; // Time in Idle state
+    public float wanderTime = 5f; // Time in Wander state
+    public float wanderRadius = 10f; // Radius of the wander area
+
 
 
     private StateMachine stateMachine;

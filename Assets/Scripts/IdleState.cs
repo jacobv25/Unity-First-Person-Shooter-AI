@@ -3,10 +3,12 @@ using UnityEngine;
 
 public class IdleState : State
 {
+    private float idleTimer;
 
     public IdleState(NPC npc) : base(npc)
     {
         this.npc = npc;
+        idleTimer = npc.idleTime;
     }
 
     public override void Enter()
@@ -42,6 +44,12 @@ public class IdleState : State
                     return;
                 }
             }
+        }
+
+        idleTimer -= Time.deltaTime;
+        if (idleTimer <= 0)
+        {
+            npc.ChangeState(new WanderState(npc, npc.wanderRadius));
         }
     }
 
