@@ -29,7 +29,7 @@ public class RangedAttackState : State
         {
             // Face the target
             Vector3 targetDirection = npc.Target.transform.position - npc.transform.position;
-            float singleStep = npc.rotationSpeed * Time.deltaTime;
+            float singleStep = npc.RotationSpeed * Time.deltaTime;
             Vector3 newDirection = Vector3.RotateTowards(npc.transform.forward, targetDirection, singleStep, 0.0f);
             newDirection.y = 0;  // Keep the NPC upright. Assumes NPC moves in the XZ plane.
             npc.transform.rotation = Quaternion.LookRotation(newDirection);

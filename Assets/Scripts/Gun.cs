@@ -7,7 +7,7 @@ public class Gun : MonoBehaviour
     public int totalAmmo = 120; // total ammo the player has
     public float reloadTime = 2f; // reload time in seconds
     public GameObject bulletPrefab; // Prefab for the bullet
-    public float bulletSpeed = 10f; // speed of bullet
+    public float bulletSpeed = 50f; // speed of bullet
     public float fireRate = 10f; // Bullets per second
     public Transform bulletSpawnPoint; // The point from which bullets are fired
 
@@ -22,7 +22,7 @@ public class Gun : MonoBehaviour
         currentAmmo = maxAmmo;
     }
 
-    public void Shoot()
+    public void Shoot(NPC target)
     {
         // Check if the gun can shoot
         if (!CanShoot())
@@ -33,16 +33,30 @@ public class Gun : MonoBehaviour
 
         // Shoot a bullet
         currentAmmo--;
+
         GameObject bulletObject = BulletPool.Instance.GetBullet();
         bulletObject.transform.position = bulletSpawnPoint.position;
-        bulletObject.transform.rotation = bulletSpawnPoint.rotation;
+
+        // Calculate direction to target
+        Vector3 directionToTarget;
+        if (target != null)
+        {
+            directionToTarget = (target.transform.position - bulletSpawnPoint.position).normalized;
+        }
+        else
+        {
+            directionToTarget = bulletSpawnPoint.forward;
+        }
+        
+        bulletObject.transform.rotation = Quaternion.LookRotation(directionToTarget);
         bulletObject.SetActive(true);
-        bulletObject.GetComponent<Rigidbody>().velocity = bulletSpawnPoint.forward * bulletSpeed;
+        bulletObject.GetComponent<Rigidbody>().velocity = directionToTarget * bulletSpeed;
 
         // Start reloading if out of ammo
         if (currentAmmo <= 0)
             StartCoroutine(Reload());
     }
+
 
     private IEnumerator Reload()
     {

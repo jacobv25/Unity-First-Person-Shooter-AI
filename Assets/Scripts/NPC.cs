@@ -3,28 +3,65 @@ using System.Collections.Generic;
 
 public class NPC : MonoBehaviour
 {
-    // Add properties that all NPCs should have.
-    // Health, faction, etc.
-    public static int id;
-    public int health = 100;
-    public string faction;
+    #region Properties
+    [SerializeField]
+    private static int id;
+    public static int Id { get { return id; } }
+
+    [SerializeField]
+    private int health = 100;
+    public int Health { get { return health; } }
+
+    [SerializeField]
+    private string faction;
+    public string Faction { get { return faction; } }
+
     public State CurrentState { get { return stateMachine.CurrentState; } }
+
     public NPC Target { get; set; }
-    public float rotationSpeed = 5f;
-    public float visionDistance = 10f;
-    public float visionAngle = 45f;
-    public float attackRange = 10f;
-    public int attackDamage = 10;
-    public int numberOfRays = 10;  // The number of additional rays to draw in the vision cone
-    public Gun gun; // The gun this NPC will use
-    public float idleTime = 5f; // Time in Idle state
-    public float wanderTime = 5f; // Time in Wander state
-    public float wanderRadius = 10f; // Radius of the wander area
 
+    [SerializeField]
+    private float rotationSpeed = 5f;
+    public float RotationSpeed { get { return rotationSpeed; } }
 
+    [SerializeField]
+    private float visionDistance = 10f;
+    public float VisionDistance { get { return visionDistance; } }
+
+    [SerializeField]
+    private float visionAngle = 45f;
+    public float VisionAngle { get { return visionAngle; } }
+
+    private float attackRange = visionDistance;
+    public float AttackRange { get { return attackRange; } }
+
+    [SerializeField]
+    private int attackDamage = 10;
+    public int AttackDamage { get { return attackDamage; } }
+
+    [SerializeField]
+    private int numberOfRays = 10;  // The number of additional rays to draw in the vision cone
+    public int NumberOfRays { get { return numberOfRays; } }
+
+    [SerializeField]
+    private Gun gun; // The gun this NPC will use
+    public Gun Gun { get { return gun; } }
+
+    [SerializeField]
+    private float idleTime = 5f; // Time in Idle state
+    public float IdleTime { get { return idleTime; } }
+
+    [SerializeField]
+    private float wanderTime = 5f; // Time in Wander state
+    public float WanderTime { get { return wanderTime; } }
+
+    [SerializeField]
+    private float wanderRadius = 10f; // Radius of the wander area
+    public float WanderRadius { get { return wanderRadius; } }
 
     private StateMachine stateMachine;
     private List<NPC> allNPCs = new List<NPC>();
+    #endregion
 
     protected virtual void Start()
     {
@@ -57,9 +94,6 @@ public class NPC : MonoBehaviour
     {
         stateMachine.ChangeState(state);
     }
-
-    // You can add more functions here depending on what actions an NPC can perform
-    // e.g., public void Attack(NPC target), public void Flee(), etc.
 
     private bool IsEnemyInSight(NPC npc, float visionDistance, float visionAngle)
     {
@@ -105,7 +139,7 @@ public class NPC : MonoBehaviour
     {
         if (gun != null && gun.CanShoot())
         {
-            gun.Shoot();
+            gun.Shoot(Target);
         }
     }
 

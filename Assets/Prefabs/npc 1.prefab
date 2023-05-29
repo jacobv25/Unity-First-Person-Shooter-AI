@@ -103,12 +103,15 @@ MonoBehaviour:
   health: 100
   faction: A
   rotationSpeed: 5
-  visionDistance: 10
+  visionDistance: 20
   visionAngle: 45
   attackRange: 10
   attackDamage: 10
-  numberOfRays: 10
+  numberOfRays: 30
   gun: {fileID: 4899021675753376220}
+  idleTime: 2
+  wanderTime: 10
+  wanderRadius: 10
 --- !u!195 &5104036596924009242
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -211,6 +214,10 @@ PrefabInstance:
     - target: {fileID: 4999531805781993920, guid: 04a96a43d74ca1a4eacc2407d1270ee5, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4999531805781993921, guid: 04a96a43d74ca1a4eacc2407d1270ee5, type: 3}
+      propertyPath: bulletSpeed
+      value: 50
       objectReference: {fileID: 0}
     - target: {fileID: 4999531805781993923, guid: 04a96a43d74ca1a4eacc2407d1270ee5, type: 3}
       propertyPath: m_Name
